@@ -9,7 +9,11 @@ export async function POST(req) {
         email: email,
       },
     });
-    return NextResponse.json({ message: "user Already Exists" });
+    if (findByEmail) {
+      return NextResponse.json({ exists: true });
+    } else {
+      return NextResponse.json({ exists: false });
+    }
   } catch (error) {
     return NextResponse.json({
       message: "Something Went Wronge",

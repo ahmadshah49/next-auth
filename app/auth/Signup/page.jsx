@@ -29,25 +29,31 @@ const page = () => {
   };
   const onSubmitHandler = async () => {
     setLoading(true);
+    if (!name || !email || !password || !confirmPassword) {
+      alert("Please Confirm All Field");
+      return;
+    } else {
+      null;
+    }
+    if (password !== confirmPassword) {
+      alert("please Match The Password");
+      return;
+    }
     try {
-      const resUserExists = await fetch(
-        "http://localhost:3000/api/userExists",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email }),
-        }
-      );
-
-      const User = await resUserExists.json();
-      console.log("user Exists", User);
-      if (User) {
-        alert("User already exists.");
+      const userExitsres = await fetch("http://localhost:3000/api/userExists", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+      const userExistsData = await userExitsres.json();
+      console.log("Response Form Server", userExistsData);
+      if (userExistsData.exists) {
+        alert("This Email is Already Exists");
+        setLoading(false);
         return;
       }
-
       const res = await fetch("http://localhost:3000/api/signup", {
         method: "POST",
         headers: {
@@ -69,16 +75,7 @@ const page = () => {
       console.log("error", error);
     }
     setLoading(false);
-    if (!name || !email || !password || !confirmPassword) {
-      alert("Please Confirm All Field");
-      return;
-    } else {
-      null;
-    }
-    if (password !== confirmPassword) {
-      alert("please Match The Password");
-      return;
-    }
+
     setName("");
     setEmail("");
     setPassword("");
