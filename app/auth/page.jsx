@@ -61,9 +61,17 @@ const page = () => {
               />
               <span>
                 {show ? (
-                  <BiShow onClick={onShowPassword} size={25} />
+                  <BiShow
+                    onClick={onShowPassword}
+                    size={25}
+                    className="text-black/60"
+                  />
                 ) : (
-                  <BiHide onClick={onShowPassword} size={25} />
+                  <BiHide
+                    onClick={onShowPassword}
+                    size={25}
+                    className="text-black/60"
+                  />
                 )}
               </span>
             </div>

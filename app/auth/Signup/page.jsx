@@ -1,18 +1,20 @@
 "use client";
 import Image from "next/image";
-import React from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useState } from "react";
 import { BiShow } from "react-icons/bi";
 import { BiHide } from "react-icons/bi";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 const page = () => {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [show, setShow] = useState(true);
   const [show1, setShow1] = useState(true);
+  const [loading, setLoading] = useState(false);
   const onShowPassword = () => {
     setShow(!show);
   };
@@ -25,9 +27,50 @@ const page = () => {
     password,
     confirmPassword,
   };
-  const onSubmitHandler = () => {
+  const onSubmitHandler = async () => {
+    setLoading(true);
+    try {
+      const resUserExists = await fetch(
+        "http://localhost:3000/api/userExists",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
+
+      const User = await resUserExists.json();
+      console.log("user Exists", User);
+      if (User) {
+        alert("User already exists.");
+        return;
+      }
+
+      const res = await fetch("http://localhost:3000/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
+      });
+
+      if (res.ok) {
+        router.push("/auth");
+      } else {
+        console.log("User registration failed.");
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+    setLoading(false);
     if (!name || !email || !password || !confirmPassword) {
-      alert("Please Confirm All Feild");
+      alert("Please Confirm All Field");
       return;
     } else {
       null;
@@ -36,11 +79,12 @@ const page = () => {
       alert("please Match The Password");
       return;
     }
-    console.log(data);
     setName("");
     setEmail("");
     setPassword("");
     setConfirmPassword("");
+    setShow(true);
+    setShow1(true);
   };
 
   return (
@@ -60,7 +104,7 @@ const page = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter your Fullname"
-              className="w-[80%] my-2 px-4 py-2 rounded-md outline-none focus:border-2 border-black/40"
+              className="w-[80%] my-2 px-4 py-2 rounded-md outline-none "
             />
             <input
               type="email"
@@ -68,13 +112,14 @@ const page = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your Email"
-              className="w-[80%] my-2 px-4 py-2 rounded-md outline-none focus:border-2 border-black/40"
+              className="w-[80%] my-2 px-4 py-2 rounded-md outline-none "
             />
-            <div className="w-[80%] bg-white flex items-center  px-4 my-2 py-2 rounded-md outline-none focus:border-2 border-black/40">
+            <div className="w-[80%] bg-white flex items-center  px-4 my-2 py-2 rounded-md outline-none ">
               <input
                 // type="password"
                 name="password"
                 type={show ? "password" : "text"}
+                value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
                 className="w-full outline-none"
@@ -87,12 +132,13 @@ const page = () => {
                 )}
               </span>
             </div>
-            <div className="w-[80%] bg-white flex items-center  px-4 my-2 py-2 rounded-md outline-none focus:border-2 border-black/40">
+            <div className="w-[80%] bg-white flex items-center  px-4 my-2 py-2 rounded-md outline-none ">
               <input
                 // type="password"
                 name="password"
                 type={show1 ? "password" : "text"}
-                onChange={(e) => setShow1(e.target.value)}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm password"
                 className="w-full outline-none"
               />
@@ -108,7 +154,11 @@ const page = () => {
               onClick={onSubmitHandler}
               className="py-2 px-6 mt-4 mb-8 font-bold text-white rounded bg-[#FF5B62]"
             >
-              Sign up
+              {loading ? (
+                <div className="cursor-not-allowed  ">loading...</div>
+              ) : (
+                "Sign up"
+              )}
             </button>
           </div>
           <div className="w-full flex items-center ">
