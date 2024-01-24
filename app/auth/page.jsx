@@ -6,11 +6,16 @@ import { useState } from "react";
 import Link from "next/link";
 import { BiShow } from "react-icons/bi";
 import { BiHide } from "react-icons/bi";
-
+import { signIn } from "next-auth/react";
+// import Router from "next/navigation";
+import { useRouter } from "next/navigation";
 const page = () => {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const onShowPassword = () => {
     setShow(!show);
   };
@@ -18,12 +23,30 @@ const page = () => {
     email,
     password,
   };
-  const onSubmitHandler = (e) => {
+  const onSubmitHandler = async (e) => {
     // e.preventDefault();
+    setLoading("true");
     if (!email || !password) {
-      alert("Please Fill All Feilds");
+      setError("Please Fill All Fields");
+      setLoading(false);
       return;
     }
+    try {
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+      if (res.error) {
+        setError("invalid credentials!");
+        setLoading(false);
+        return;
+      }
+      router.replace("/");
+    } catch (error) {
+      console.log("error", error);
+    }
+    setLoading(false);
     console.log(data);
     setEmail("");
     setPassword("");
@@ -34,7 +57,7 @@ const page = () => {
         <Image src={"/comp.svg"} width={500} height={500} />
       </div>
       <div className="w-[35%]">
-        <div className=" flex flex-col items-center   rounded-lg shadow-lg p-8 shadow-black/40 bg-gray-300">
+        <div className="  flex flex-col    rounded-lg shadow-lg p-8 shadow-black/40 bg-gray-300">
           <h1 className="text-center  text-4xl font-bold text-[#FF5B62]">
             Login
           </h1>
@@ -50,7 +73,7 @@ const page = () => {
               placeholder="enter your email"
               className="w-[80%] my-2 px-4 py-2 rounded-md outline-none  border-black/40"
             />
-            <div className="w-[80%] flex items-center px-4 my-2 py-2 rounded-md bg-white   ">
+            <div className=" w-[80%] flex items-center px-4 my-2 py-2 rounded-md bg-white   ">
               <input
                 type={show ? "password" : "text"}
                 name="password"
@@ -75,20 +98,26 @@ const page = () => {
                 )}
               </span>
             </div>
+            {error && (
+              <div className="bg-red-500 text-white w-[80%] text-sm py-1 px-3 rounded-md mt-2">
+                {error}
+              </div>
+            )}
             <button
               // type="submit"
               onClick={onSubmitHandler}
-              className="py-2 px-6 mt-4 mb-8 font-bold text-white rounded bg-[#FF5B62]"
+              className="py-2 px-6 mt-16 w-[80%] mb-8 font-bold text-white rounded bg-[#FF5B62]"
             >
-              login
+              {loading ? "loading..." : "login"}
             </button>
           </div>
+
           <div className="w-full flex items-center ">
             <span className="h-[1px] w-full bg-black/40 rounded text-black" />
             <span className="mx-4 text-black/40">or</span>
             <span className="h-[1px] w-full bg-black/40 rounded text-black" />
           </div>
-          <button className="flex py-2 my-2 px-6 gap-2 justify-center items-center bg-black/40 text-white rounded">
+          <button className="flex w-[80%] mx-auto py-2 my-2 px-6 gap-2 justify-center items-center bg-black/40 text-white rounded">
             <FcGoogle size={25} /> Sign up with Google
           </button>
         </div>

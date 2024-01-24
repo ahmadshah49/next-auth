@@ -15,6 +15,8 @@ const page = () => {
   const [show, setShow] = useState(true);
   const [show1, setShow1] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
   const onShowPassword = () => {
     setShow(!show);
   };
@@ -30,13 +32,22 @@ const page = () => {
   const onSubmitHandler = async () => {
     setLoading(true);
     if (!name || !email || !password || !confirmPassword) {
-      alert("Please Confirm All Field");
+      setError("Please Confirm All Fields");
+      setLoading(false);
       return;
     } else {
       null;
     }
+    if (password.length <= 3 || confirmPassword.length <= 3) {
+      setError("Password Must Contain 4 Charcters");
+      setLoading(false);
+      return;
+    } else {
+      setLoading(true);
+    }
     if (password !== confirmPassword) {
-      alert("please Match The Password");
+      setError("Please Match The Password");
+      setLoading(false);
       return;
     }
     try {
@@ -50,7 +61,7 @@ const page = () => {
       const userExistsData = await userExitsres.json();
       console.log("Response Form Server", userExistsData);
       if (userExistsData.exists) {
-        alert("This Email is Already Exists");
+        setError("This Email is Already Exists");
         setLoading(false);
         return;
       }
@@ -129,7 +140,7 @@ const page = () => {
                 )}
               </span>
             </div>
-            <div className="w-[80%] bg-white flex items-center  px-4 my-2 py-2 rounded-md outline-none ">
+            <div className="w-[80%] bg-white flex   px-4 my-2 py-2 rounded-md outline-none ">
               <input
                 // type="password"
                 name="password"
@@ -147,9 +158,14 @@ const page = () => {
                 )}
               </span>
             </div>
+            {error && (
+              <div className="bg-red-500 text-white w-[80%] text-sm py-1 px-3 rounded-md mt-2">
+                {error}
+              </div>
+            )}
             <button
               onClick={onSubmitHandler}
-              className="py-2 px-6 mt-4 mb-8 font-bold text-white rounded bg-[#FF5B62]"
+              className="py-2 w-[80%] px-6 mt-16 mb-8 font-bold text-white rounded bg-[#FF5B62]"
             >
               {loading ? (
                 <div className="cursor-not-allowed  ">loading...</div>
@@ -163,7 +179,7 @@ const page = () => {
             <span className="mx-4 text-black/40">or</span>
             <span className="h-[1px] w-full bg-black/40 rounded text-black" />
           </div>
-          <button className="flex py-2 my-2 px-6 gap-2 justify-center items-center bg-black/40 text-white rounded">
+          <button className="flex w-[80%] py-2 my-2 px-6 gap-2 justify-center items-center bg-black/40 text-white rounded">
             <FcGoogle size={25} /> login with Google
           </button>
         </div>
