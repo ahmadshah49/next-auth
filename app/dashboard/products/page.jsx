@@ -1,7 +1,12 @@
 import React from "react";
+import DashboradLayout from "../DashboradLayout";
 
 const page = () => {
-  return <div>products</div>;
+  return (
+    <DashboradLayout>
+      <div>products</div>;
+    </DashboradLayout>
+  );
 };
 
 export default page;
