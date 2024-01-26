@@ -7,7 +7,7 @@ export default function DashboradLayout({ children }) {
       <Sidebar />
       <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
         <Header />
-        <div className="mx-auto max-w-screen-2xl p-4 2xl:p-10">{children}</div>
+        <div className=" w-full h-full">{children}</div>
       </div>
     </main>
   );
