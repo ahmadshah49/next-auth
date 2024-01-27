@@ -16,3 +16,21 @@ model User {
   name     String
   password String
 }
+
+model AddProducts {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  visitors Int
+  price    Int
+  sales    Int
+  month    String
+}
+
+model AddVistors {
+  id             String  @id @default(auto()) @map("_id") @db.ObjectId
+  visitors       Int?
+  premiumVistors Int?
+  loaction       String?
+  device         String?
+  month          String?
+}
