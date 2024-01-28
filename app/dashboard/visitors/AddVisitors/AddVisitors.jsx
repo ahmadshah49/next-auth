@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
-
+import { useRouter } from "next/navigation";
 const AddVisitors = ({ isOpen, onClose }) => {
   const [vistors, setVistors] = useState("");
   const [premiumUser, setPremiumUser] = useState("");
   const [location, setLocation] = useState("");
   const [device, setDevice] = useState("");
   const [month, setMonth] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
   const months = [
     { value: "jan", label: "January" },
     { value: "feb", label: "February" },
@@ -28,16 +31,55 @@ const AddVisitors = ({ isOpen, onClose }) => {
     { value: "lap", label: "Laptop" },
     { value: "mob", label: "Mobile" },
   ];
-  const onSubmitHandler = (e) => {
+  const onSubmitHandler = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const formData = { vistors, premiumUser, location, device, month };
-    console.log(formData);
+    if (!vistors || !premiumUser || !location || !device || !month) {
+      setError("Please Fill all fields");
+      setLoading(false);
+      return;
+    }
+    try {
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      var raw = JSON.stringify({
+        visitors: parseInt(formData.vistors),
+        premiumVistors: parseInt(formData.premiumUser),
+        loaction: formData.location,
+        device: formData.device,
+        month: formData.month,
+      });
+
+      var requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+
+      const res = await fetch(
+        "http://localhost:3000/api/addVisitors",
+        requestOptions
+      );
+    } catch (error) {
+      console.log("error adding visitors", error);
+    }
     setDevice("");
     setLocation("");
     setMonth("");
     setPremiumUser("");
     setVistors("");
+    setLoading(false);
+    setError("");
     onClose();
+
+    router.refresh();
+  };
+  const onCloseHandler = () => {
+    onClose();
+    setError("");
   };
   return (
     <div
@@ -147,17 +189,23 @@ const AddVisitors = ({ isOpen, onClose }) => {
             ))}
           </select>
         </div>
+
+        {error && (
+          <div className="bg-red-700 text-white py-1 rounded-md px-4">
+            {error}
+          </div>
+        )}
         <div className="flex mt-14 mb-4 gap-6">
           <button
             type="submit"
             className="py-2 px-8 bg-white text-slate-600 font-bold rounded-md"
           >
-            Add
+            {loading ? "Loading..." : "Add"}
           </button>
           <button
             type="button"
             className="py-2 px-8 bg-red-500 text-white font-bold rounded-md"
-            onClick={onClose}
+            onClick={onCloseHandler}
           >
             Close
           </button>

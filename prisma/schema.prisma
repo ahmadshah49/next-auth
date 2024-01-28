@@ -28,9 +28,9 @@ model AddProducts {
 
 model AddVistors {
   id             String  @id @default(auto()) @map("_id") @db.ObjectId
-  visitors       Int?
-  premiumVistors Int?
-  loaction       String?
-  device         String?
-  month          String?
+  visitors       Int
+  premiumVistors Int
+  loaction       String
+  device         String
+  month          String
 }

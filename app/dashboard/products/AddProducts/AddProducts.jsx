@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+import { useRouter } from "next/navigation";
 const AddProducts = ({ isOpen, onClose }) => {
   const [name, setName] = useState("");
   const [visitors, setVisitors] = useState("");
@@ -9,19 +9,21 @@ const AddProducts = ({ isOpen, onClose }) => {
   const [sales, setSales] = useState("");
   const [month, setMonth] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
   const months = [
-    { value: "jan", label: "January" },
-    { value: "feb", label: "February" },
-    { value: "mar", label: "March" },
-    { value: "apr", label: "April" },
-    { value: "may", label: "May" },
-    { value: "jun", label: "June" },
-    { value: "jul", label: "July" },
-    { value: "aug", label: "August" },
-    { value: "sep", label: "September" },
-    { value: "oct", label: "October" },
-    { value: "nov", label: "November" },
-    { value: "dec", label: "December" },
+    { value: "January", label: "January" },
+    { value: "February", label: "February" },
+    { value: "March", label: "March" },
+    { value: "April", label: "April" },
+    { value: "May", label: "May" },
+    { value: "June", label: "June" },
+    { value: "July", label: "July" },
+    { value: "August", label: "August" },
+    { value: "September", label: "September" },
+    { value: "October", label: "October" },
+    { value: "November", label: "November" },
+    { value: "December", label: "December" },
   ];
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -33,7 +35,11 @@ const AddProducts = ({ isOpen, onClose }) => {
       sales,
       month,
     };
-    console.log(formData);
+    if (!name || !visitors || !price || !sales || !month) {
+      setError("Please Fill all fields");
+      setLoading(false);
+      return;
+    }
     try {
       var myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
@@ -66,9 +72,15 @@ const AddProducts = ({ isOpen, onClose }) => {
     setSales("");
     setMonth("");
     setLoading(false);
+    setError("");
     onClose();
-  };
 
+    router.refresh();
+  };
+  const onCloseHandler = () => {
+    onClose();
+    setError("");
+  };
   return (
     <div
       className={
@@ -164,6 +176,11 @@ const AddProducts = ({ isOpen, onClose }) => {
             ))}
           </select>
         </div>
+        {error && (
+          <div className="bg-red-700 text-white py-1 rounded-md px-4">
+            {error}
+          </div>
+        )}
         <div className="flex mt-14 mb-4 gap-6">
           <button
             type="submit"
@@ -174,7 +191,7 @@ const AddProducts = ({ isOpen, onClose }) => {
           <button
             type="button"
             className="py-2 px-8 bg-red-500 text-white font-bold rounded-md"
-            onClick={onClose}
+            onClick={onCloseHandler}
           >
             Close
           </button>
