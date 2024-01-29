@@ -12,18 +12,18 @@ const AddProducts = ({ isOpen, onClose }) => {
   const [error, setError] = useState("");
   const router = useRouter();
   const months = [
-    { value: "January", label: "January" },
-    { value: "February", label: "February" },
-    { value: "March", label: "March" },
-    { value: "April", label: "April" },
-    { value: "May", label: "May" },
-    { value: "June", label: "June" },
-    { value: "July", label: "July" },
-    { value: "August", label: "August" },
-    { value: "September", label: "September" },
-    { value: "October", label: "October" },
-    { value: "November", label: "November" },
-    { value: "December", label: "December" },
+    { value: "jan", label: "January" },
+    { value: "feb", label: "February" },
+    { value: "mar", label: "March" },
+    { value: "apr", label: "April" },
+    { value: "may", label: "May" },
+    { value: "jun", label: "June" },
+    { value: "jul", label: "July" },
+    { value: "aug", label: "August" },
+    { value: "sep", label: "September" },
+    { value: "oct", label: "October" },
+    { value: "nov", label: "November" },
+    { value: "dec", label: "December" },
   ];
   const onSubmitHandler = async (e) => {
     e.preventDefault();
