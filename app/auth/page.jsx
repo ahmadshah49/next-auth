@@ -42,7 +42,7 @@ const page = () => {
         setLoading(false);
         return;
       }
-      router.replace("/");
+      router.replace("/dashboard");
     } catch (error) {
       console.log("error", error);
     }

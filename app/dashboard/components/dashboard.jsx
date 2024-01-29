@@ -65,7 +65,7 @@ const CardsData = ({ productsData, vistorsData }) => {
         <VisitorsAnalytics allVistors={vistorsData} />
       </div>
       <div className="grid grid-cols-12 p-8 gap-4">
-        <DeviceAnalytics />
+        <DeviceAnalytics allVistors={vistorsData} />
       </div>
     </div>
   );

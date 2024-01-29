@@ -16,7 +16,7 @@ const getPremiumVisitor = (data, country) => {
 };
 const VisitorsAnalytics = ({ allVistors }) => {
   const uniqueLocation = [...new Set(allVistors.map((item) => item.loaction))];
-  console.log(allVistors);
+  //   console.log(allVistors);
   const options = {
     chart: {
       toolbar: {
@@ -38,7 +38,7 @@ const VisitorsAnalytics = ({ allVistors }) => {
     },
     yaxis: {
       min: 0,
-      max: 10000,
+      max: 100000,
       tickAmount: 10,
       labels: {
         formatter: function (value) {
