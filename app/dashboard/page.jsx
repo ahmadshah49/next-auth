@@ -1,6 +1,4 @@
-import React from "react";
-import SignOut from "../componets/signOut";
-import CardsData from "./components/dashboard";
+import CardsData from "./components/dashborad";
 import DashboradLayout from "./DashboradLayout";
 import prisma from "../config/prisma";
 

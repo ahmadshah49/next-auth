@@ -1,4 +1,3 @@
-import Image from "next/image";
 import SignOut from "./componets/signOut";
 
 export default function Home() {
